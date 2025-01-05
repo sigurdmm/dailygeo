@@ -1,11 +1,18 @@
-'use client'
+import { Database } from '@/types/supabase';
+import { createClient } from '@utils/supabase/server';
+import HomeClient from './HomeClient';
 
-export default function Home() {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <main>
-        <h1>Welcome</h1>
-      </main>
-    </div>
-  );
+export default async function Page() {
+  const supabase = await createClient<Database>();
+  const { data } = await supabase.from("challenges").select("*")
+  
+  console.log(data)
+  if (!data) {
+    return (<div>
+        <h1>No data yet!</h1>
+      </div>
+    )
+  }
+
+  return <HomeClient challenges={data} />
 }
