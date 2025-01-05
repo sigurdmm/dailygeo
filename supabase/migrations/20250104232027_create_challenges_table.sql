@@ -1,7 +1,6 @@
 -- Recreate the challenges table
 CREATE TABLE challenges (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  challenge_token TEXT NOT NULL,
+  challenge_token TEXT PRIMARY KEY,
   created_at TIMESTAMP DEFAULT NOW(),
   map TEXT NOT NULL,
   forbid_moving BOOLEAN NOT NULL,
