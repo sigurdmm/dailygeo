@@ -11,7 +11,7 @@ export type Database = {
     Tables: {
       challenges: {
         Row: {
-          challenge_id: string
+          challenge_token: string
           created_at: string | null
           forbid_moving: boolean
           forbid_rotating: boolean
@@ -22,7 +22,7 @@ export type Database = {
           time_limit: number
         }
         Insert: {
-          challenge_id: string
+          challenge_token: string
           created_at?: string | null
           forbid_moving: boolean
           forbid_rotating: boolean
@@ -33,7 +33,7 @@ export type Database = {
           time_limit: number
         }
         Update: {
-          challenge_id?: string
+          challenge_token?: string
           created_at?: string | null
           forbid_moving?: boolean
           forbid_rotating?: boolean
@@ -50,7 +50,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_latest_challenge: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          challenge_token: string
+          created_at: string | null
+          forbid_moving: boolean
+          forbid_rotating: boolean
+          forbid_zooming: boolean
+          id: string
+          map: string
+          rounds: number
+          time_limit: number
+        }
+      }
     }
     Enums: {
       [_ in never]: never

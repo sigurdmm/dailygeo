@@ -38,7 +38,7 @@ Deno.serve(async () => {
     if (data && data.token) {
       const { data: insertedData, error } = await supabase.from("challenges").insert([
         {
-          challenge_id: data.token,
+          challenge_token: data.token,
           map: gameSettings.map,
           forbid_moving: gameSettings.forbidMoving,
           forbid_rotating: gameSettings.forbidRotating,
