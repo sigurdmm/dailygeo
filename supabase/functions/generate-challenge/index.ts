@@ -2,8 +2,6 @@ import { gameSettings } from "./config.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 Deno.serve(async () => {
-  console.log("Fetching a new challenge");
-
   const apiUrl = "https://www.geoguessr.com/api/v3";
   const apiToken = Deno.env.get("GEOGUESSR_API_TOKEN");
   const supabaseUrl = Deno.env.get("SUPABASE_URL");

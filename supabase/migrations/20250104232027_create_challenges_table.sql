@@ -14,12 +14,7 @@ CREATE TABLE challenges (
 -- Enable Row-Level Security (RLS)
 ALTER TABLE challenges ENABLE ROW LEVEL SECURITY;
 
--- Policy to allow all authenticated users to read challenges
-CREATE POLICY "allow_read_all" ON challenges
+-- Policy to restrict access to the service role and the SECURITY DEFINER function
+CREATE POLICY "allow_access_via_service_role" ON challenges
 FOR SELECT
-USING (true);
-
--- Policy to restrict insert, update, and delete to the service role only
-CREATE POLICY "restrict_modifications" ON challenges
-FOR ALL
-USING (auth.role() = 'service_role');
+USING (auth.role() = 'service_role');ctio
