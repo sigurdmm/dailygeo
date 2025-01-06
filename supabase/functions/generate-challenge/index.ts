@@ -1,42 +1,41 @@
+import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+
 import { gameSettings } from "./config.ts";
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { fetchGeoGuessrApi } from "../utils/apiUtils.ts";
 
-Deno.serve(async () => {
-  const apiUrl = "https://www.geoguessr.com/api/v3";
-  const apiToken = Deno.env.get("GEOGUESSR_API_TOKEN");
-  const supabaseUrl = Deno.env.get("SUPABASE_URL");
-  const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+const apiUrl = "https://www.geoguessr.com/api/v3";
+const apiToken = Deno.env.get("GEOGUESSR_API_TOKEN");
+const supabaseUrl = Deno.env.get("SUPABASE_URL");
+const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
-  if (!apiUrl || !apiToken || !supabaseUrl || !supabaseServiceRoleKey) {
-    console.error("Missing API URL, Token, or Supabase credentials");
-    return new Response("Missing API URL, Token, or Supabase credentials", {
-      status: 500,
-    });
-  }
+interface ChallengeResponse {
+  token: string;
+}
 
-  const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
-
+Deno.serve(async (req: Request) => {
   try {
-    const response = await fetch(`${apiUrl}/challenges`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Cookie: `_ncfa=${apiToken}`,
-      },
-      body: JSON.stringify(gameSettings),
-    });
 
-    if (!response.ok) {
-      console.error(`Failed to fetch challenge: ${response.statusText}`);
-      return new Response(`Failed to fetch challenge: ${response.statusText}`, {
-        status: response.status,
-      });
+    if (!apiUrl || !apiToken || !supabaseUrl || !supabaseServiceRoleKey) {
+      throw new Error(`Missing API URL, Token, or Supabase credentials`);
     }
 
-    const data = await response.json();
+    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
-    if (data && data.token) {
-      const { data: insertedData, error } = await supabase.from("challenges").insert([
+    const data = await fetchGeoGuessrApi<ChallengeResponse>(
+      "/challenges",
+      "POST",
+      apiToken,
+      gameSettings
+    );
+
+    if (!data || !data.token) {
+      throw new Error("No token found");
+    }
+
+    const { data: insertedData, error } = await supabase
+      .from("challenges")
+      .insert([
         {
           challenge_token: data.token,
           map: gameSettings.map,
@@ -48,25 +47,15 @@ Deno.serve(async () => {
         },
       ]);
 
-      if (error) {
-        console.error("Error inserting challenge ID:", error.message);
-        return new Response(`Error inserting challenge ID: ${error.message}`, {
-          status: 500,
-        });
-      }
-      return new Response(`Challenge ID successfully inserted: ${data.token}`, {
-        status: 200,
-      });
-    } else {
-      console.error("No challenge token received from API");
-      return new Response("No challenge token received from API", {
-        status: 400,
-      });
+    if (error) {
+      throw new Error("Error inserting challenge to challenges table");
     }
-  } catch (error) {
-    console.error("Error fetching challenge: ", error.message);
-    return new Response(`Error fetching challenge: ${error.message}`, {
-      status: 500,
+
+    return new Response("generate-challenge function run successfully!", {
+      status: 200,
     });
+  } catch (error) {
+    console.error("Error: ", error.message);
+    return new Response(error.message, { status: 500 });
   }
 });
