@@ -13,6 +13,12 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html>
+      <head>
+        <link
+          href="https://fonts.googleapis.com/css?family=Poppins"
+          rel="stylesheet"
+        />
+      </head>
       <body className="antialiased">
         <div className="min-h-screen flex flex-col">
           <header className="h-36">
