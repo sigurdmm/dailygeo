@@ -9,6 +9,39 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      challenge_scores: {
+        Row: {
+          challenge_token: string
+          winning_player_id: string | null
+          winning_score: number | null
+        }
+        Insert: {
+          challenge_token: string
+          winning_player_id?: string | null
+          winning_score?: number | null
+        }
+        Update: {
+          challenge_token?: string
+          winning_player_id?: string | null
+          winning_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_scores_challenge_token_fkey"
+            columns: ["challenge_token"]
+            isOneToOne: true
+            referencedRelation: "challenges"
+            referencedColumns: ["challenge_token"]
+          },
+          {
+            foreignKeyName: "challenge_scores_winning_player_id_fkey"
+            columns: ["winning_player_id"]
+            isOneToOne: false
+            referencedRelation: "player"
+            referencedColumns: ["player_id"]
+          },
+        ]
+      }
       challenges: {
         Row: {
           challenge_token: string
@@ -16,7 +49,6 @@ export type Database = {
           forbid_moving: boolean
           forbid_rotating: boolean
           forbid_zooming: boolean
-          id: string
           map: string
           rounds: number
           time_limit: number
@@ -27,7 +59,6 @@ export type Database = {
           forbid_moving: boolean
           forbid_rotating: boolean
           forbid_zooming: boolean
-          id?: string
           map: string
           rounds: number
           time_limit: number
@@ -38,18 +69,82 @@ export type Database = {
           forbid_moving?: boolean
           forbid_rotating?: boolean
           forbid_zooming?: boolean
-          id?: string
           map?: string
           rounds?: number
           time_limit?: number
         }
         Relationships: []
       }
+      player: {
+        Row: {
+          created_at: string | null
+          pin_url: string | null
+          player_id: string
+          player_name: string
+        }
+        Insert: {
+          created_at?: string | null
+          pin_url?: string | null
+          player_id: string
+          player_name: string
+        }
+        Update: {
+          created_at?: string | null
+          pin_url?: string | null
+          player_id?: string
+          player_name?: string
+        }
+        Relationships: []
+      }
+      player_challenge_scores: {
+        Row: {
+          challenge_token: string
+          player_id: string
+          total_score: number | null
+        }
+        Insert: {
+          challenge_token: string
+          player_id: string
+          total_score?: number | null
+        }
+        Update: {
+          challenge_token?: string
+          player_id?: string
+          total_score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "player_challenge_scores_challenge_token_fkey"
+            columns: ["challenge_token"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["challenge_token"]
+          },
+          {
+            foreignKeyName: "player_challenge_scores_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "player"
+            referencedColumns: ["player_id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      get_best_rounds: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          created_at: string
+          challenge_token: string
+          player_id: string
+          player_name: string
+          pin_url: string
+          total_score: number
+        }[]
+      }
       get_latest_challenge: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -58,11 +153,19 @@ export type Database = {
           forbid_moving: boolean
           forbid_rotating: boolean
           forbid_zooming: boolean
-          id: string
           map: string
           rounds: number
           time_limit: number
         }
+      }
+      get_overall_standings: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          player_id: string
+          player_name: string
+          pin_url: string
+          victories: number
+        }[]
       }
     }
     Enums: {
