@@ -14,7 +14,7 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html className={poppins.className}>
+    <html className={poppins.className} lang="en">
       <body className="antialiased">
         <div className="min-h-screen flex flex-col">
           <NavBar />
