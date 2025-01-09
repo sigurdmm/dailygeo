@@ -9,7 +9,6 @@ interface AvatarAndNameProps {
 }
 
 export function AvatarAndName({ name, url }: AvatarAndNameProps) {
-  console.log(getAvatarUrl(url));
   return (
     <div className="flex items-center gap-2">
       <Avatar src={getAvatarUrl(url)} />

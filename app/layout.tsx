@@ -2,18 +2,19 @@ import "./globals.css";
 import { Providers } from "./providers";
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+  weight: "400",
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html>
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css?family=Poppins"
-          rel="stylesheet"
-        />
-      </head>
+    <html className={poppins.className}>
       <body className="antialiased">
         <div className="min-h-screen flex flex-col">
           <NavBar />

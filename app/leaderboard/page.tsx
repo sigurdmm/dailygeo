@@ -5,9 +5,9 @@ import LeaderboardClient from "./LeaderboardClient";
 export default async function LeaderboardPage() {
   const supabase = await createClient<Database>();
 
-  const { data: overallStandings, error: overallStandingsError } =
+  const { data: overallStandings } =
     await supabase.rpc("get_overall_standings");
-  const { data: bestRounds, error: bestRoundsError } = await supabase.rpc(
+  const { data: bestRounds } = await supabase.rpc(
     "get_best_rounds"
   );
 

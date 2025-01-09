@@ -3,7 +3,6 @@ import { Database } from "@/types/supabase";
 import { getChallengeUrl } from "@/utils/geoguessr";
 import { formatPostgresTimestamp } from "@/utils/time";
 import {
-  Link,
   Table,
   TableBody,
   TableCell,

@@ -2,7 +2,6 @@
 
 import { Database } from "@/types/supabase";
 import { Button, Link } from "@nextui-org/react";
-import { PressEvent } from "@react-types/shared";
 
 interface Props {
   challenge: Database["public"]["Tables"]["challenges"]["Row"];
