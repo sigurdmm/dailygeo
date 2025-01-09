@@ -9,13 +9,6 @@ CREATE TABLE challenges (
   rounds INTEGER NOT NULL
 );
 
-ALTER TABLE challenges ENABLE ROW LEVEL SECURITY;
-
--- Policy to restrict access to the service role and the SECURITY DEFINER function
-CREATE POLICY "allow_access_via_service_role" ON challenges
-FOR SELECT
-USING (auth.role() = 'service_role');
-
 CREATE TABLE player (
   player_id TEXT PRIMARY KEY,
   player_name TEXT NOT NULL,
@@ -39,12 +32,3 @@ CREATE TABLE player_challenge_scores (
   FOREIGN KEY (player_id) REFERENCES player (player_id) ON DELETE CASCADE,
   FOREIGN KEY (challenge_token) REFERENCES challenges (challenge_token) ON DELETE CASCADE
 );
-
--- Enable RLS
-ALTER TABLE player_challenge_scores ENABLE ROW LEVEL SECURITY;
-
--- Policy: Allow players to see their scores
-CREATE POLICY select_own_scores 
-ON player_challenge_scores
-FOR SELECT
-USING (player_id = current_user);

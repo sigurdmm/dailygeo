@@ -11,4 +11,4 @@ BEGIN
 
   RETURN latest_challenge;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql;
