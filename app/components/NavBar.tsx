@@ -1,16 +1,23 @@
 "use client";
 
-import { Navbar, NavbarBrand, Tab, Tabs } from "@nextui-org/react";
-import { usePathname, useRouter } from "next/navigation";
-import { Key } from "react";
+import {
+  Link,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+} from "@nextui-org/react";
+import { usePathname } from "next/navigation";
+
+import dynamic from "next/dynamic";
+const Navbar = dynamic(
+  () => import("@nextui-org/react").then((mod) => mod.Navbar),
+  { ssr: false }
+);
 
 export default function NavBar() {
-  const pathname = usePathname(); // Get the current route
-  const router = useRouter();
+  const pathname = usePathname();
 
-  const handleTabChange = (value: Key) => {
-    router.push(value.toString()); // Navigate to the selected tab
-  };
+  console.log(pathname);
 
   return (
     <Navbar maxWidth="full">
@@ -19,16 +26,24 @@ export default function NavBar() {
           DailyGeo
         </h1>
       </NavbarBrand>
-      <Tabs
-        aria-label="Site Navigation"
-        selectedKey={pathname}
-        onSelectionChange={handleTabChange}
-        variant="underlined"
-        size="lg"
-      >
-        <Tab key="/" title="Home" />
-        <Tab key="/leaderboard" title="Leaderboard" />
-      </Tabs>
+      <NavbarContent justify="center">
+        <NavbarItem
+          isActive={pathname === "" || pathname === "/"}
+          className="data-[active=true]:font-bold"
+        >
+          <Link href="/" color="foreground">
+            Home
+          </Link>
+        </NavbarItem>
+        <NavbarItem
+          isActive={pathname === "/leaderboard"}
+          className="data-[active=true]:font-bold"
+        >
+          <Link href="/leaderboard" color="foreground">
+            Leaderboard
+          </Link>
+        </NavbarItem>
+      </NavbarContent>
     </Navbar>
   );
 }
